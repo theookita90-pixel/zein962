@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Kendaraan</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1d4ed8;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            background: #2563eb;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .danger:hover {
+            background: #b91c1c;
+        }
+
+        .vehicle {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .vehicle h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+
+        .vehicle p {
+            margin: 5px 0;
+        }
+
+        .info {
+            color: #475569;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat {
+            background: #eff6ff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .stat h3 {
+            font-size: 30px;
+            margin: 5px;
+            color: #2563eb;
+        }
+
+        .stat p {
+            margin: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Data Kendaraan</h1>
+    </header>
+
+
+    <div class="container">
+
+        <!-- ========================= -->
+        <!-- STATISTIK -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h2>Statistik</h2>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <h3 id="totalKendaraan">0</h3>
+                    <p>Total Kendaraan</p>
+                </div>
+
+                <div class="stat">
+                    <h3 id="totalMobil">0</h3>
+                    <p>Mobil</p>
+                </div>
+
+                <div class="stat">
+                    <h3 id="totalMotor">0</h3>
+                    <p>Motor</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- FORM TAMBAH KENDARAAN -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h2>Tambah Kendaraan</h2>
+
+            <div class="form-group">
+
+                <label for="jenis">
+                    Jenis Kendaraan
+                </label>
+
+                <select id="jenis">
+
+                    <option value="mobil">
+                        Mobil
+                    </option>
+
+                    <option value="motor">
+                        Motor
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="merk">
+                    Merek Kendaraan
+                </label>
+
+                <input
+                    type="text"
+                    id="merk"
+                    placeholder="Contoh: Toyota"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="tahun">
+                    Tahun
+                </label>
+
+                <input
+                    type="number"
+                    id="tahun"
+                    placeholder="Contoh: 2025"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="detail">
+                    Jumlah Pintu / Jenis Motor
+                </label>
+
+                <input
+                    type="text"
+                    id="detail"
+                    placeholder="Mobil: 4 | Motor: Matic"
+                >
+
+            </div>
+
+
+            <button onclick="tambahKendaraan()">
+                + Tambah Kendaraan
+            </button>
+
+            <button
+                class="danger"
+                onclick="hapusSemua()"
+            >
+                Hapus Semua
+            </button>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- DAFTAR KENDARAAN -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h2>Daftar Kendaraan</h2>
+
+            <div id="daftarKendaraan">
+
+                <p class="info">
+                    Belum ada kendaraan.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // Menyimpan data kendaraan
+        let kendaraan = [];
+
+
+        // =========================
+        // TAMBAH KENDARAAN
+        // =========================
+
+        function tambahKendaraan() {
+
+            const jenis =
+                document.getElementById("jenis").value;
+
+            const merk =
+                document.getElementById("merk").value.trim();
+
+            const tahun =
+                document.getElementById("tahun").value;
+
+            const detail =
+                document.getElementById("detail").value.trim();
+
+
+            // Validasi
+            if (
+                merk === "" ||
+                tahun === "" ||
+                detail === ""
+            ) {
+
+                alert("Semua data harus diisi!");
+
+                return;
+            }
+
+
+            // Membuat data baru
+            const dataBaru = {
+
+                jenis: jenis,
+
+                merk: merk,
+
+                tahun: tahun,
+
+                detail: detail
+
+            };
+
+
+            // Masukkan ke array
+            kendaraan.push(dataBaru);
+
+
+            // Kosongkan form
+            document.getElementById("merk").value = "";
+
+            document.getElementById("tahun").value = "";
+
+            document.getElementById("detail").value = "";
+
+
+            // Tampilkan data
+            tampilkanKendaraan();
+
+        }
+
+
+        // =========================
+        // MENAMPILKAN KENDARAAN
+        // =========================
+
+        function tampilkanKendaraan() {
+
+            const daftar =
+                document.getElementById("daftarKendaraan");
+
+
+            // Kalau belum ada data
+            if (kendaraan.length === 0) {
+
+                daftar.innerHTML = `
+                    <p class="info">
+                        Belum ada kendaraan.
+                    </p>
+                `;
+
+                updateStatistik();
+
+                return;
+            }
+
+
+            // Kosongkan daftar
+            daftar.innerHTML = "";
+
+
+            // Tampilkan semua kendaraan
+            kendaraan.forEach(function(data, index) {
+
+                const namaJenis =
+                    data.jenis === "mobil"
+                    ? "Mobil"
+                    : "Motor";
+
+
+                const div =
+                    document.createElement("div");
+
+                div.className = "vehicle";
+
+
+                div.innerHTML = `
+
+                    <h3>
+                        ${data.merk}
+                    </h3>
+
+                    <p>
+                        <strong>Jenis:</strong>
+                        ${namaJenis}
+                    </p>
+
+                    <p>
+                        <strong>Tahun:</strong>
+                        ${data.tahun}
+                    </p>
+
+                    <p>
+                        <strong>Detail:</strong>
+                        ${data.detail}
+                    </p>
+
+                    <button
+                        class="danger"
+                        onclick="hapusKendaraan(${index})"
+                    >
+                        Hapus
+                    </button>
+
+                `;
+
+
+                daftar.appendChild(div);
+
+            });
+
+
+            // Update statistik
+            updateStatistik();
+
+        }
+
+
+        // =========================
+        // STATISTIK
+        // =========================
+
+        function updateStatistik() {
+
+            const total =
+                kendaraan.length;
+
+
+            const mobil =
+                kendaraan.filter(function(data) {
+
+                    return data.jenis === "mobil";
+
+                }).length;
+
+
+            const motor =
+                kendaraan.filter(function(data) {
+
+                    return data.jenis === "motor";
+
+                }).length;
+
+
+            document.getElementById(
+                "totalKendaraan"
+            ).textContent = total;
+
+
+            document.getElementById(
+                "totalMobil"
+            ).textContent = mobil;
+
+
+            document.getElementById(
+                "totalMotor"
+            ).textContent = motor;
+
+        }
+
+
+        // =========================
+        // HAPUS SATU KENDARAAN
+        // =========================
+
+        function hapusKendaraan(index) {
+
+            kendaraan.splice(index, 1);
+
+            tampilkanKendaraan();
+
+        }
+
+
+        // =========================
+        // HAPUS SEMUA
+        // =========================
+
+        function hapusSemua() {
+
+            if (kendaraan.length === 0) {
+
+                alert("Belum ada data kendaraan.");
+
+                return;
+            }
+
+
+            const yakin =
+                confirm(
+                    "Apakah kamu yakin ingin menghapus semua kendaraan?"
+                );
+
+
+            if (yakin) {
+
+                kendaraan = [];
+
+                tampilkanKendaraan();
+
+            }
+
+        }
+
+
+        // Tampilkan statistik pertama kali
+        updateStatistik();
+
+    </script>
+
+</body>
+</html>
